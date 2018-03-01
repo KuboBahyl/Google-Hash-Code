@@ -15,6 +15,9 @@ def choose_best(car):
     best_il = 0
 
     for i in range(k):
+        if i <= len(start_t_rides):
+            continue
+
         if start_t_rides[i][0] in processed:
             del start_t_rides[i]
             continue
@@ -35,6 +38,9 @@ def choose_best(car):
         if score > best_s:
             best_s = score
             best_is = i
+
+        if i <= len(length_rides):
+            continue
 
         if length_rides[i][0] in processed:
             del length_rides[i]
