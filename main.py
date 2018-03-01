@@ -2,7 +2,6 @@
 import numpy as np
 
 start_t_rides = []
-length_rides = []
 processed = set()
 k = 0
 t = 0
@@ -15,11 +14,7 @@ def choose_best(car):
     best_il = 0
 
     for i in range(k):
-        if i <= len(start_t_rides):
-            continue
-
-        if start_t_rides[i][0] in processed:
-            del start_t_rides[i]
+        if i >= len(start_t_rides):
             continue
 
         if t > start_t_rides[i][5]:
@@ -39,41 +34,12 @@ def choose_best(car):
             best_s = score
             best_is = i
 
-        if i <= len(length_rides):
-            continue
-
-        if length_rides[i][0] in processed:
-            del length_rides[i]
-            continue
-
-        if t > length_rides[i][5]:
-            processed.add(length_rides[i][0])
-            del length_rides[i]
-            continue
-
-        dist = ride_length(car['x'], car['y'], length_rides[i][1], length_rides[i][2])
-        if t + dist + length_rides[i][7] >= length_rides[i][6]:
-            continue
-
-        score = length_rides[i][7]
-        if t + dist <= length_rides[i][5]:
-            score += bonus
-
-        if score > best_l:
-            best_l = score
-            best_il = i
-
-    if best_s > best_l:
-        processed.add(start_t_rides[best_is][0])
-        pom = start_t_rides[best_is][0]
-        del start_t_rides[best_is]
-        return pom
-    else:
-        length_rides[best_il][0]
-        processed.add(length_rides[best_il][0])
-        pom = length_rides[best_il][0]
-        del length_rides[best_il]
-        return pom
+    print(len(start_t_rides), best_is)
+    print(processed)
+    processed.add(start_t_rides[best_is][0])
+    pom = start_t_rides[best_is][0]
+    del start_t_rides[best_is]
+    return pom
 
 def ride_length(sx, sy, tx, ty):
     xlen = np.absolute(sx - tx)
@@ -90,7 +56,6 @@ if __name__ == '__main__':
 
     free_car = [{'time': 0, 'x': 0, 'y': 0, 'rides': []} for c in range(cars)]
     start_t_rides = sorted(rides, key = lambda x: x[5])
-    length_rides = sorted(rides, key = lambda x: x[7])
 
     k = len(rides)
 
