@@ -1,72 +1,115 @@
 # THE MAINEST FILE
-
-import time as t
-import numpy as np
-from tqdm import tqdm # loading bars
-
-from processing import preprocess, postprocess
-from InOut import *
-from best_solution import *
-
 import numpy as np
 
-def ride_length(ride):
-    xlen = np.absolute(ride[0] - ride[1])
-    ylen = np.absolute(ride[2] - ride[3])
+start_t_rides = []
+length_rides = []
+processed = set()
+k = 0
+t = 0
+bonus = 0
+
+def choose_best(car):
+    best_s = 0
+    best_l = 0
+    best_is = 0
+    best_il = 0
+
+    for i in range(k):
+        if start_t_rides[i][0] in processed:
+            del start_t_rides[i]
+            continue
+
+        if t > start_t_rides[i][5]:
+            processed.add(start_t_rides[i][0])
+            del start_t_rides[i]
+            continue
+
+        dist = ride_length(car['x'], car['y'], start_t_rides[i][1], start_t_rides[i][2])
+        if t + dist + start_t_rides[i][7] >= start_t_rides[i][6]:
+            continue
+
+        score = start_t_rides[i][7]
+        if t + dist <= start_t_rides[i][5]:
+            score += bonus
+
+        if score > best_s:
+            best_s = score
+            best_is = i
+
+        if length_rides[i][0] in processed:
+            del length_rides[i]
+            continue
+
+        if t > length_rides[i][5]:
+            processed.add(length_rides[i][0])
+            del length_rides[i]
+            continue
+
+        dist = ride_length(car['x'], car['y'], length_rides[i][1], length_rides[i][2])
+        if t + dist + length_rides[i][7] >= length_rides[i][6]:
+            continue
+
+        score = length_rides[i][7]
+        if t + dist <= length_rides[i][5]:
+            score += bonus
+
+        if score > best_l:
+            best_l = score
+            best_il = i
+
+    if best_s > best_l:
+        processed.add(start_t_rides[best_is][0])
+        pom = start_t_rides[best_is][0]
+        del start_t_rides[best_is]
+        return pom
+    else:
+        length_rides[best_il][0]
+        processed.add(length_rides[best_il][0])
+        pom = length_rides[best_il][0]
+        del length_rides[best_il]
+        return pom
+
+def ride_length(sx, sy, tx, ty):
+    xlen = np.absolute(sx - tx)
+    ylen = np.absolute(sy - ty)
     return xlen + ylen
-
-def if_bonus(, ride):
-    pass
-
-def calc_score(cars, rides):
-    pass(ride):
-    """
-    calculates time needed for a ride
-    """
-    return np.absolute(ride[0] - ride[2]) + np.absolute(ride[1] - ride[3])
-
-def read_input(path):
-    with open(path, 'r') as f:
-        Nrows, Ncols, Ncars, Nrides, bonus, Nsteps = [int(i) for i in f.readline().split(" ")]
-
-        rides = []
-
-        for ride in range(Nrides):
-            rides.append([int(i) for i in f.readline().split(" ")])
-
-        sorted(rides, key = lambda x: x[4])
-
-    return {
-        'Nrows': Nrows,
-        'Ncols': Ncols,
-        'Ncars': Ncars,
-        'bonus': bonus,
-        'Nsteps': Nsteps,
-        'rides': rides
-    }
 
 def write_output(path, *args):
     with open(path, 'w') as f:
         f.write("best output")
         f.write('\n')
 
-def postprocess():
-    pass
-
-def greedy_search():
-    pass
-
 if __name__ == '__main__':
     """
     READING INPUT
     """
-    rows, columns, vehicles, rides, bonus, steps = [int(x) for x in input().split()]
+    rows, columns, cars, nrides, bonus, steps = [int(x) for x in input().split()]
     rides = []
-    for i in range(rides):
+    for i in range(nrides):
         start_x, start_y, end_x, end_y, start_t, end_t = [int(x) for x in input().split()]
-        rides.append([start_x, start_y, end_x, end_y, start_t, end_t])
+        rides.append([i, start_x, start_y, end_x, end_y, start_t, end_t, ride_length(start_x, start_y, end_x, end_y)])
 
-    time_start = t.time()
+    free_car = [{'time': 0, 'x': 0, 'y': 0, 'rides': []} for c in range(cars)]
+    start_t_rides = sorted(rides, key = lambda x: x[5])
+    length_rides = sorted(rides, key = lambda x: x[7])
+
+    k = int(round(np.sqrt(len(rides))))
+
+    for t in range(steps):
+        for car in free_car:
+            if car['time'] <= t:
+                best_index = choose_best(car)
+                car['rides'].append(best_index)
+                car['time'] = ride_length(car['x'], car['y'], rides[best_index][1], rides[best_index][2]) + rides[best_index][7] + t
+                car['x'] = rides[best_index][3]
+                car['y'] = rides[best_index][4]
+
+    with open('out.txt', 'w') as f:
+        for car in free_car:
+            f.write(len(car['rides']))
+            f.write(' ')
+            f.write(' '.join(str(x) for x in car['rides']))
+            f.write('\n')
 
     """
     PREPROCESSING
