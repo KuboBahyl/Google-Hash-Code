@@ -2,8 +2,7 @@
 
 def read_input(path):
     with open(path, 'r') as f:
-        line1 = f.readline().split(" ")
-        line2 = f.readline().split(" ")
+        arg1, arg2, arg3 = [int(i) for i in f.readline().split(" ")]
 
         """
         INPUT PARSING

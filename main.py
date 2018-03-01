@@ -7,21 +7,43 @@ from processing import preprocess, postprocess
 from InOut import *
 from best_solution import *
 
-"""
-READING INPUT
-"""
+def read_input(path):
+    with open(path, 'r') as f:
+        arg1, arg2, arg3 = [int(i) for i in f.readline().split(" ")]
 
-time_start = t.time()
+        arg4, arg5, arg6 = [int(i) for i in f.readline().split(" ")]
 
-"""
-PREPROCESSING
-"""
 
-print("Preprocessing time: {0:.2f}s".format(t.time() - time_start))
+def write_output(path, *args):
+    with open(path, 'w') as f:
+        f.write("best output")
+        f.write('\n')
 
-"""
-MAINEST THING
-"""
+def preprocess():
+    pass
 
-end_start = t.time()
-print("Preprocessing time: {0:.2f}s".format(end_start - time_start))
+def postprocess():
+    pass
+
+if __name__ == '__main__':
+    """
+    READING INPUT
+    """
+
+    time_start = t.time()
+
+    """
+    PREPROCESSING
+    """
+
+    print("Preprocessing time: {0:.2f}s".format(t.time() - time_start))
+
+    """
+    MAINEST THING
+    """
+
+    end_start = t.time()
+    print("Preprocessing time: {0:.2f}s".format(end_start - time_start))   
+
+
+main()
