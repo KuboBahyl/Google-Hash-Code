@@ -9,10 +9,12 @@ from best_solution import *
 
 def read_input(path):
     with open(path, 'r') as f:
-        arg1, arg2, arg3 = [int(i) for i in f.readline().split(" ")]
+        Nrows, Ncols, Ncars, Nrides, bonus, Nsteps = [int(i) for i in f.readline().split(" ")]
 
-        arg4, arg5, arg6 = [int(i) for i in f.readline().split(" ")]
+        rides = []
 
+        for ride in range(Nrides):
+            rides.append([int(i) for i in f.readline().split(" ")])
 
 def write_output(path, *args):
     with open(path, 'w') as f:
@@ -23,6 +25,9 @@ def preprocess():
     pass
 
 def postprocess():
+    pass
+
+def greedy_search():
     pass
 
 if __name__ == '__main__':
@@ -43,7 +48,7 @@ if __name__ == '__main__':
     """
 
     end_start = t.time()
-    print("Preprocessing time: {0:.2f}s".format(end_start - time_start))   
+    print("Preprocessing time: {0:.2f}s".format(end_start - time_start))
 
 
 main()
