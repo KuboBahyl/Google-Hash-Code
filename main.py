@@ -60,6 +60,11 @@ if __name__ == '__main__':
     """
     READING INPUT
     """
+    rows, columns, vehicles, rides, bonus, steps = [int(x) for x in input().split()]
+    rides = []
+    for i in range(rides):
+        start_x, start_y, end_x, end_y, start_t, end_t = [int(x) for x in input().split()]
+        rides.append([start_x, start_y, end_x, end_y, start_t, end_t])
 
     time_start = t.time()
 
