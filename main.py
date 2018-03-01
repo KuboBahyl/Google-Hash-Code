@@ -103,6 +103,8 @@ if __name__ == '__main__':
 
     for t in range(steps):
         for car in free_car:
+            if len(processed) >= nrides:
+                break
             if car['time'] <= t:
                 best_index = choose_best(car)
                 car['rides'].append(best_index)
@@ -112,20 +114,7 @@ if __name__ == '__main__':
 
     with open('out.txt', 'w') as f:
         for car in free_car:
-            f.write(len(car['rides']))
+            f.write(str(len(car['rides'])))
             f.write(' ')
             f.write(' '.join(str(x) for x in car['rides']))
             f.write('\n')
-
-    """
-    PREPROCESSING
-    """
-
-    print("Preprocessing time: {0:.2f}s".format(t.time() - time_start))
-
-    """
-    MAINEST THING
-    """
-
-    end_start = t.time()
-    print("Preprocessing time: {0:.2f}s".format(end_start - time_start))
