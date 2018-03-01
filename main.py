@@ -80,15 +80,8 @@ def ride_length(sx, sy, tx, ty):
     ylen = np.absolute(sy - ty)
     return xlen + ylen
 
-def write_output(path, *args):
-    with open(path, 'w') as f:
-        f.write("best output")
-        f.write('\n')
 
 if __name__ == '__main__':
-    """
-    READING INPUT
-    """
     rows, columns, cars, nrides, bonus, steps = [int(x) for x in input().split()]
     rides = []
     for i in range(nrides):
@@ -99,7 +92,7 @@ if __name__ == '__main__':
     start_t_rides = sorted(rides, key = lambda x: x[5])
     length_rides = sorted(rides, key = lambda x: x[7])
 
-    k = int(round(np.sqrt(len(rides))))
+    k = len(rides)
 
     for t in range(steps):
         for car in free_car:
@@ -112,9 +105,6 @@ if __name__ == '__main__':
                 car['x'] = rides[best_index][3]
                 car['y'] = rides[best_index][4]
 
-    with open('out.txt', 'w') as f:
-        for car in free_car:
-            f.write(str(len(car['rides'])))
-            f.write(' ')
-            f.write(' '.join(str(x) for x in car['rides']))
-            f.write('\n')
+    for car in free_car:
+        out = str(len(car['rides'])) + ' ' + ' '.join(str(x) for x in car['rides'])
+        print(out)
