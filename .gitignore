@@ -9,3 +9,6 @@
 /.doit.db.dir
 *.ipynb
 2019/sandbox/
+.DS_Store
+
+
