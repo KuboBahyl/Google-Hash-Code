@@ -4,7 +4,6 @@ python3 main.py data/example.in out.txt
 '''
 
 import sys
-import tensorflow as tf
 
 
 def parse_input(file):
@@ -15,6 +14,7 @@ def parse_input(file):
             nums.append(line.rstrip('\n').split(' '))
 
     return nums
+
 
 def write_out(file, data):
     with open(file, 'w') as f:
