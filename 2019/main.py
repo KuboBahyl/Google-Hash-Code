@@ -24,6 +24,13 @@ class Photo:
     def __str__(self):
         return "orientation: {}, tag_count: {}, tags: {}".format(self.orientation, self.tag_count, self.tags)
 
+    def intersection(self, photo):
+        return self.tags.intersection(photo.tags)
+
+    def intersection_len(self, photo):
+        return len(self.intersection(photo))
+
+
 def parse_input(file):
     nums = []
     collection = []
@@ -38,7 +45,7 @@ def parse_input(file):
             line_split = str(line).strip().split(' ')
             orientation = line_split[0]
             tag_count = line_split[1]
-            tags = line_split[2:]
+            tags = set(line_split[2:])
             photo = Photo(orientation=orientation, tag_count=tag_count, tags=tags)
             print(photo)
             photos.append(photo)
