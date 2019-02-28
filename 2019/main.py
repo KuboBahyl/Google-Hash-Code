@@ -74,7 +74,6 @@ def greedy(photos):
     best_1 = None
     best_2 = None
     best_score = 0
-    slideshow = []
     score = 0
     for photo1 in photos:
         for photo2 in photos:
@@ -93,32 +92,31 @@ def greedy(photos):
     best_right_photo = None
 
     while len(slideshow) < photos_len:
-        print('slideshow')
-        for photo in slideshow:
-            print(photo)
         for photo in photos:
-            if photo in slideshow:
-                print('happened')
-                continue
+            if photo not in slideshow:
 
-            # left
-            score_temp = find_min(photo.tags, slideshow[0].tags)
-            if score_temp > best_left:
-                best_left = score_temp
-                best_left_photo = photo
+                # left
+                score_temp = find_min(photo.tags, slideshow[0].tags)
+                if score_temp > best_left:
+                    best_left = score_temp
+                    best_left_photo = photo
 
-            # right
-            score_temp = find_min(photo.tags, slideshow[-1].tags)
-            if score_temp > best_right:
-                best_right = score_temp
-                best_right_photo = photo
+                # right
+                score_temp = find_min(photo.tags, slideshow[-1].tags)
+                if score_temp > best_right:
+                    best_right = score_temp
+                    best_right_photo = photo
 
         if best_right >= best_left:
             slideshow.append(best_right_photo)
         else:
             slideshow.insert(0, best_left_photo)
 
-    print('slideshow')
+        best_left = 0
+        best_right = 0
+        best_left_photo = None
+        best_right_photo = None
+
     for photo in slideshow:
         print(photo)
 
