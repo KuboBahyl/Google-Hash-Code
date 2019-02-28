@@ -4,13 +4,14 @@ python3 main.py data/example.in out.txt
 '''
 
 import sys
+from tqdm import tqdm
 
 # Data
 files = ["../data/a_example.txt",
          "../data/b_lovely_landscapes.txt",
-         "../data/e_shiny_selfies.txt",
+         "../data/c_memorable_moments.txt",
          "../data/d_pet_pictures.txt",
-         "../data/c_memorable_moments.txt"]
+         "../data/e_shiny_selfies.txt"]
 
 # Global variables
 photos_len = 0
@@ -28,8 +29,8 @@ class Photo:
     def __str__(self):
         return "orientation: {}, tag_count: {}, tags: {}".format(self.orientation, self.tag_count, self.tags)
 
-    def __eq__(self, photo):
-        return self.id == photo.id
+    # def __eq__(self, photo):
+    #     return self.id == photo.id
 
     def intersection(self, photo):
         return self.tags.intersection(photo.tags)
@@ -63,14 +64,27 @@ def parse_input(file):
     return photos
 
 
-def write_out(file, data):
+def write_out(file, slideshow):
     with open(file, 'w') as f:
-        for line in data:
-            for val in line:
-                f.write('{} '.format(val))
-            f.write('\n')
+        f.write('{}\n'.format(len(slideshow)))
+        for photo in slideshow:
+            f.write('{}\n'.format(photo.id))
 
 def greedy(photos):
+    '''
+    verticals
+    '''
+    verticals = list()
+    for photo in photos:
+        if photo.is_vertical:
+            verticals.append(photo.id)
+
+
+    '''
+    verticals
+    '''
+
+
     best_1 = None
     best_2 = None
     best_score = 0
@@ -90,10 +104,11 @@ def greedy(photos):
     best_right = 0
     best_left_photo = None
     best_right_photo = None
+    used_inds = set([best_1.id, best_2.id])
 
-    while len(slideshow) < photos_len:
+    for i in tqdm(range(photos_len)):
         for photo in photos:
-            if photo not in slideshow:
+            if photo.id not in used_inds:
 
                 # left
                 score_temp = find_min(photo.tags, slideshow[0].tags)
@@ -107,21 +122,27 @@ def greedy(photos):
                     best_right = score_temp
                     best_right_photo = photo
 
-        if best_right >= best_left:
+        if best_right >= best_left and best_right_photo:
             slideshow.append(best_right_photo)
-        else:
+            score += best_right
+            used_inds.add(best_right_photo.id)
+        elif best_left_photo:
             slideshow.insert(0, best_left_photo)
+            score += best_left
+            used_inds.add(best_left_photo.id)
 
         best_left = 0
         best_right = 0
         best_left_photo = None
         best_right_photo = None
 
-    for photo in slideshow:
-        print(photo)
+    # for photo in slideshow:
+    #     print(photo)
+    return slideshow, score
 
 if __name__ == '__main__':
     photos = parse_input(files[0])
-    greedy(photos)
+    slideshow, score = greedy(photos)
+    print(score, len(slideshow))
 
-    # write_out(sys.argv[2] if len(sys.argv) > 2 else 'out.txt', nums)
+    write_out(sys.argv[1], slideshow)
