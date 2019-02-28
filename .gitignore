@@ -10,5 +10,4 @@
 *.ipynb
 2019/sandbox/
 .DS_Store
-
-
+2019/\.idea/
