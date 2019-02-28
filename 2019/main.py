@@ -4,6 +4,7 @@ python3 main.py data/example.in out.txt
 '''
 
 import sys
+import tensorflow as tf
 
 
 def parse_input(file):
