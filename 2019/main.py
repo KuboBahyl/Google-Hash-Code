@@ -5,21 +5,18 @@ python3 main.py data/example.in out.txt
 
 import sys
 
+# Data
 files = ["../data/a_example.txt",
          "../data/b_lovely_landscapes.txt",
          "../data/e_shiny_selfies.txt",
          "../data/d_pet_pictures.txt",
          "../data/c_memorable_moments.txt"]
 
+# Global variables
 collection_len = 0
 photos = []
 
-def find_min(a, b):
-    intersection = len(a.intersection(b))
-    a_not_b = len(a.difference(b))
-    b_not_a = len(b.difference(a))
-    return min(intersection, a_not_b, b_not_a)
-
+# Classes
 class Photo:
     def __init__(self, orientation, tag_count, tags):
         self.orientation = orientation
@@ -36,15 +33,20 @@ class Photo:
     def intersection_len(self, photo):
         return len(self.intersection(photo))
 
+# Functions
+def find_min(a, b):
+    intersection = len(a.intersection(b))
+    a_not_b = len(a.difference(b))
+    b_not_a = len(b.difference(a))
+    return min(intersection, a_not_b, b_not_a)
 
 def parse_input(file):
-    nums = []
-    collection = []
     with open(file, 'r') as f:
         for i, line in enumerate(f):
             # TODO parsing
 
             if i == 0:
+                global collection_len
                 collection_len = int(line.strip())
                 continue
 
@@ -55,8 +57,6 @@ def parse_input(file):
             photo = Photo(orientation=orientation, tag_count=tag_count, tags=tags)
             print(photo)
             photos.append(photo)
-
-    return nums
 
 
 def write_out(file, data):
@@ -69,4 +69,4 @@ def write_out(file, data):
 
 if __name__ == '__main__':
     nums = parse_input(files[0])
-    write_out(sys.argv[2] if len(sys.argv) > 2 else 'out.txt', nums)
+    # write_out(sys.argv[2] if len(sys.argv) > 2 else 'out.txt', nums)
