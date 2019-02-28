@@ -64,27 +64,28 @@ def parse_input(file):
     return photos
 
 
-def write_out(file, slideshow):
+def write_out(file, slideshow_ver, slideshow_hor):
+    verticals = int(len(slideshow_ver) / 2)
+    slideshow_len = verticals + len(slideshow_hor)
+    slideshow = slideshow_ver + slideshow_hor
+
     with open(file, 'w') as f:
-        f.write('{}\n'.format(len(slideshow)))
-        for photo in slideshow:
-            f.write('{}\n'.format(photo.id))
+        f.write('{}\n'.format(slideshow_len))
+
+        for i, photo in enumerate(slideshow):
+            if i < len(slideshow) - 1:
+                if not photo.is_vertical:
+                    f.write('{}\n'.format(photo.id))
+                else:
+                    if i%2 == 0:
+                        f.write('{} '.format(photo.id))
+                    else:
+                        f.write('{}\n'.format(photo.id))
+            else:
+                f.write('{}'.format(photo.id))
+
 
 def greedy(photos):
-    '''
-    verticals
-    '''
-    verticals = list()
-    for photo in photos:
-        if photo.is_vertical:
-            verticals.append(photo.id)
-
-
-    '''
-    verticals
-    '''
-
-
     best_1 = None
     best_2 = None
     best_score = 0
@@ -138,11 +139,15 @@ def greedy(photos):
 
     # for photo in slideshow:
     #     print(photo)
+
     return slideshow, score
 
 if __name__ == '__main__':
-    photos = parse_input(files[0])
-    slideshow, score = greedy(photos)
-    print(score, len(slideshow))
+    photos = parse_input(files[3])
+    horizontal = [photo for photo in photos if not photo.is_vertical]
+    slideshow_hor, score = greedy(horizontal)
 
-    write_out(sys.argv[1], slideshow)
+    vertical = [photo for photo in photos if photo.is_vertical]
+    slideshow_ver, score = greedy(vertical)
+
+    write_out(sys.argv[1], slideshow_ver, slideshow_hor)
