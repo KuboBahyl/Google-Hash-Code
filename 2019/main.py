@@ -13,12 +13,13 @@ files = ["../data/a_example.txt",
          "../data/c_memorable_moments.txt"]
 
 # Global variables
-collection_len = 0
+photos_len = 0
 photos = []
 
 # Classes
 class Photo:
-    def __init__(self, orientation, tag_count, tags):
+    def __init__(self, id, orientation, tag_count, tags):
+        self.id = id
         self.orientation = orientation
         self.tag_count = tag_count
         self.tags = tags
@@ -26,6 +27,9 @@ class Photo:
 
     def __str__(self):
         return "orientation: {}, tag_count: {}, tags: {}".format(self.orientation, self.tag_count, self.tags)
+
+    def __eq__(self, photo):
+        return self.id == photo.id
 
     def intersection(self, photo):
         return self.tags.intersection(photo.tags)
@@ -46,17 +50,17 @@ def parse_input(file):
             # TODO parsing
 
             if i == 0:
-                global collection_len
-                collection_len = int(line.strip())
+                global photos_len
+                photos_len = int(line.strip())
                 continue
 
             line_split = str(line).strip().split(' ')
             orientation = line_split[0]
             tag_count = line_split[1]
             tags = set(line_split[2:])
-            photo = Photo(orientation=orientation, tag_count=tag_count, tags=tags)
-            print(photo)
+            photo = Photo(id=i-1, orientation=orientation, tag_count=tag_count, tags=tags)
             photos.append(photo)
+    return photos
 
 
 def write_out(file, data):
@@ -66,7 +70,60 @@ def write_out(file, data):
                 f.write('{} '.format(val))
             f.write('\n')
 
+def greedy(photos):
+    best_1 = None
+    best_2 = None
+    best_score = 0
+    slideshow = []
+    score = 0
+    for photo1 in photos:
+        for photo2 in photos:
+            score_temp = find_min(photo1.tags, photo2.tags)
+            if score_temp > best_score:
+                best_score = score_temp
+                best_1 = photo1
+                best_2 = photo2
+
+    slideshow = [best_1, best_2]
+    score += best_score
+
+    best_left = 0
+    best_right = 0
+    best_left_photo = None
+    best_right_photo = None
+
+    while len(slideshow) < photos_len:
+        print('slideshow')
+        for photo in slideshow:
+            print(photo)
+        for photo in photos:
+            if photo in slideshow:
+                print('happened')
+                continue
+
+            # left
+            score_temp = find_min(photo.tags, slideshow[0].tags)
+            if score_temp > best_left:
+                best_left = score_temp
+                best_left_photo = photo
+
+            # right
+            score_temp = find_min(photo.tags, slideshow[-1].tags)
+            if score_temp > best_right:
+                best_right = score_temp
+                best_right_photo = photo
+
+        if best_right >= best_left:
+            slideshow.append(best_right_photo)
+        else:
+            slideshow.insert(0, best_left_photo)
+
+    print('slideshow')
+    for photo in slideshow:
+        print(photo)
 
 if __name__ == '__main__':
-    nums = parse_input(files[0])
+    photos = parse_input(files[0])
+    greedy(photos)
+
     # write_out(sys.argv[2] if len(sys.argv) > 2 else 'out.txt', nums)
