@@ -14,6 +14,12 @@ files = ["../data/a_example.txt",
 collection_len = 0
 photos = []
 
+def find_min(a, b):
+    intersection = len(a.intersection(b))
+    a_not_b = len(a.difference(b))
+    b_not_a = len(b.difference(a))
+    return min(intersection, a_not_b, b_not_a)
+
 class Photo:
     def __init__(self, orientation, tag_count, tags):
         self.orientation = orientation
