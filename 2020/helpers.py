@@ -8,6 +8,7 @@ def parse_input(path):
             n_b, p_l, b_p_d = lines[2 + i * 2].split(' ')
             books = [int(x) for x in lines[2 + i * 2 + 1].split(' ')]
             libraries.append({
+                'lib_id': i,
                 'n_b': int(n_b),
                 'p_l': int(p_l),
                 'b_p_d': int(b_p_d),
